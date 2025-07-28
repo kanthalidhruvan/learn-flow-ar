@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -42,7 +43,8 @@ export default {
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					foreground: 'hsl(var(--accent-foreground))',
+					glow: 'hsl(var(--accent-glow))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -52,6 +54,10 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// AR-specific colors
+				'ar-purple': 'hsl(var(--ar-purple))',
+				'ar-cyan': 'hsl(var(--ar-cyan))',
+				'ar-orange': 'hsl(var(--ar-orange))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +90,48 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'ar-glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px hsl(217 91% 60% / 0.3)'
+					},
+					'50%': {
+						boxShadow: '0 0 40px hsl(217 91% 60% / 0.6)'
+					}
+				},
+				'code-scan': {
+					'0%': {
+						transform: 'translateX(-100%)'
+					},
+					'100%': {
+						transform: 'translateX(100%)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-10px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'ar-glow': 'ar-glow 2s ease-in-out infinite',
+				'code-scan': 'code-scan 2s ease-in-out infinite',
+				'float': 'float 3s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-ar-primary': 'var(--gradient-ar-primary)',
+				'gradient-ar-secondary': 'var(--gradient-ar-secondary)',
+				'gradient-code': 'var(--gradient-code)'
+			},
+			boxShadow: {
+				'ar-glow': 'var(--shadow-ar-glow)',
+				'code': 'var(--shadow-code)',
+				'card-ar': 'var(--shadow-card)'
 			}
 		}
 	},

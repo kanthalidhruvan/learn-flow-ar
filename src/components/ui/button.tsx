@@ -18,12 +18,21 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // AR-specific variants using design system tokens
+        ar: "bg-gradient-ar-primary text-primary-foreground hover:shadow-ar-glow transition-all duration-300",
+        "ar-secondary": "bg-gradient-ar-secondary text-foreground hover:shadow-ar-glow transition-all duration-300",
+        "ar-accent": "bg-accent text-accent-foreground hover:bg-accent-glow transition-all duration-300",
+        "ar-outline": "border border-primary bg-transparent text-primary hover:bg-primary/10 hover:shadow-ar-glow transition-all duration-300",
+        "code-analyze": "bg-ar-purple text-foreground hover:bg-ar-purple/80 shadow-lg transition-all duration-300",
+        "ar-success": "bg-accent text-accent-foreground hover:bg-accent-glow shadow-lg transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        "ar-large": "h-12 px-8 text-base font-semibold",
+        "ar-wide": "h-10 px-12 min-w-32"
       },
     },
     defaultVariants: {
