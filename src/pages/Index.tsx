@@ -130,7 +130,7 @@ const mockEvaluation = {
 const mockVideo = {
   title: "Understanding Array Maximum: From Brute Force to Optimal",
   description: "Learn how to find the maximum element in an array using different approaches, from basic loops to advanced functional programming techniques.",
-  youtubeId: "dQw4w9WgXcQ", // This would be a real educational video ID
+  youtubeId: "lrMPbTGrZM4", // This would be a real educational video ID
   duration: "8:42",
   difficulty: "beginner" as const,
   topics: ["Arrays", "Loops", "Built-in Methods", "Time Complexity", "Algorithm Optimization"]
