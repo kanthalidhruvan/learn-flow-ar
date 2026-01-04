@@ -7,7 +7,7 @@ import { CodeInputModule } from "@/components/CodeInputModule";
 import { SolutionComparison } from "@/components/SolutionComparison";
 import { CodeEvaluation } from "@/components/CodeEvaluation";
 import { ARVideoPlayer } from "@/components/ARVideoPlayer";
-import { analyzeCode } from "@/lib/api";
+import { analyzeCode, evaluateCode, fetchVideo } from "@/lib/api";
 import {
   Brain,
   Zap,
@@ -19,33 +19,6 @@ import {
   Target,
 } from "lucide-react";
 
-/* ---------- TEMP MOCK DATA (will be replaced later) ---------- */
-const mockEvaluation = {
-  overallScore: 78,
-  grade: "B+",
-  metrics: [],
-  feedback: {
-    strengths: [],
-    improvements: [],
-    recommendations: [],
-  },
-  graphAnalysis: {
-    astComplexity: 12,
-    cfgComplexity: 8,
-    semanticSimilarity: 87,
-  },
-};
-
-const mockVideo = {
-  title: "Understanding Algorithm Optimization",
-  description: "Step-by-step explanation of brute force to optimal solutions.",
-  youtubeId: "lrMPbTGrZM4",
-  duration: "8:42",
-  difficulty: "beginner" as const,
-  topics: ["Algorithms", "Time Complexity", "Optimization"],
-};
-/* ------------------------------------------------------------- */
-
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<
     "input" | "analysis" | "solutions" | "evaluation" | "video"
@@ -53,29 +26,44 @@ const Index = () => {
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzedCode, setAnalyzedCode] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
   const [solutions, setSolutions] = useState<any[]>([]);
+  const [evaluation, setEvaluation] = useState<any | null>(null);
+  const [video, setVideo] = useState<any | null>(null);
+
   const { toast } = useToast();
 
-  /* -------- BACKEND CONNECTED FUNCTION -------- */
+  /* ---------- BACKEND CONNECTED PIPELINE ---------- */
   const handleCodeSubmit = async (code: string, language: string) => {
     try {
       setIsAnalyzing(true);
       setAnalyzedCode(code);
+      setSelectedLanguage(language);
 
-      const response = await analyzeCode(code, language);
+      // 1️⃣ Analyze code
+      const analysisRes = await analyzeCode(code, language);
+      setSolutions(analysisRes.solutions);
 
-      setSolutions(response.solutions);
+      // 2️⃣ Evaluate code
+      const evaluationRes = await evaluateCode(code, language);
+      setEvaluation(evaluationRes);
+
+      // 3️⃣ Fetch learning video
+      const videoRes = await fetchVideo(language, "algorithm");
+      setVideo(videoRes);
+
       setCurrentStep("analysis");
 
       toast({
         title: "Analysis Complete",
-        description: "Code analyzed using backend AI pipeline.",
+        description: "Code analyzed, evaluated, and learning content generated.",
       });
     } catch (error) {
       console.error(error);
       toast({
         title: "Backend Error",
-        description: "Failed to analyze code. Is backend running?",
+        description: "Failed to process code. Check backend server.",
         variant: "destructive",
       });
     } finally {
@@ -85,8 +73,8 @@ const Index = () => {
 
   const handleViewInAR = () => {
     toast({
-      title: "AR Mode",
-      description: "AR visualization hook triggered.",
+      title: "AR Mode Activated",
+      description: "Solution ready for AR visualization.",
     });
   };
 
@@ -97,7 +85,7 @@ const Index = () => {
   const handleEnterAR = () => {
     toast({
       title: "AR Environment Ready",
-      description: "Launching AR overlay (WebAR).",
+      description: "Launching immersive AR learning experience.",
     });
   };
 
@@ -109,7 +97,10 @@ const Index = () => {
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-6">
               <Brain className="w-8 h-8 text-primary-foreground animate-float" />
-              <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">
+              <Badge
+                variant="outline"
+                className="border-primary-foreground/30 text-primary-foreground"
+              >
                 AR-Enhanced Learning
               </Badge>
             </div>
@@ -119,7 +110,7 @@ const Index = () => {
             </h1>
 
             <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl">
-              Augmented Reality based code evaluation and explanation platform.
+              Augmented Reality based code evaluation, explanation, and immersive learning platform.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -165,7 +156,9 @@ const Index = () => {
                   <span className="text-sm font-medium">{step.label}</span>
                 </div>
               </Card>
-              {index < 4 && <ArrowRight className="mx-2 w-4 h-4 text-muted-foreground" />}
+              {index < 4 && (
+                <ArrowRight className="mx-2 w-4 h-4 text-muted-foreground" />
+              )}
             </div>
           ))}
         </div>
@@ -188,7 +181,10 @@ const Index = () => {
                 <Button onClick={() => setCurrentStep("solutions")}>
                   View Solutions
                 </Button>
-                <Button variant="outline" onClick={() => setCurrentStep("evaluation")}>
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentStep("evaluation")}
+                >
                   View Evaluation
                 </Button>
               </CardContent>
@@ -204,19 +200,19 @@ const Index = () => {
             />
           )}
 
-          {currentStep === "evaluation" && (
+          {currentStep === "evaluation" && evaluation && (
             <CodeEvaluation
-              overallScore={mockEvaluation.overallScore}
-              grade={mockEvaluation.grade}
-              metrics={mockEvaluation.metrics}
-              feedback={mockEvaluation.feedback}
-              graphAnalysis={mockEvaluation.graphAnalysis}
+              overallScore={evaluation.overallScore}
+              grade={evaluation.grade}
+              metrics={evaluation.metrics}
+              feedback={evaluation.feedback}
+              graphAnalysis={evaluation.graphAnalysis}
             />
           )}
 
-          {currentStep === "video" && (
+          {currentStep === "video" && video && (
             <ARVideoPlayer
-              video={mockVideo}
+              video={video}
               concept="Algorithm Optimization"
               onEnterAR={handleEnterAR}
             />
