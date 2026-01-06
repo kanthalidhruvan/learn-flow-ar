@@ -1,7 +1,6 @@
-# routes/analyze.py
 from fastapi import APIRouter
-from models.schemas import CodeRequest
-from services.solution_generator import generate_solutions
+from backend.models.schemas import CodeRequest
+from backend.services.solution_generator import generate_solutions
 
 router = APIRouter()
 

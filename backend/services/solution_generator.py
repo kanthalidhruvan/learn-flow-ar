@@ -1,36 +1,39 @@
-# services/solution_generator.py
-def generate_solutions(code, language):
+from backend.services.llm_service import generate_ai_explanation
+
+def generate_solutions(code: str, language: str):
+    ai_text = generate_ai_explanation(code, language)
+
     return {
         "solutions": [
             {
                 "type": "brute-force",
                 "title": "Brute Force Approach",
-                "description": "Simple iterative solution",
-                "timeComplexity": "O(n)",
+                "description": ai_text["brute_force_explanation"],
+                "timeComplexity": "O(n²)",
                 "spaceComplexity": "O(1)",
                 "code": code,
-                "efficiency": 45,
-                "explanation": "Checks each element sequentially"
+                "efficiency": 40,
+                "explanation": ai_text["brute_force_explanation"]
             },
             {
                 "type": "better",
-                "title": "Improved Approach",
-                "description": "Reduced operations",
+                "title": "Better Approach",
+                "description": ai_text["better_explanation"],
                 "timeComplexity": "O(n)",
                 "spaceComplexity": "O(1)",
                 "code": code,
                 "efficiency": 70,
-                "explanation": "Optimized loop usage"
+                "explanation": ai_text["better_explanation"]
             },
             {
                 "type": "optimal",
                 "title": "Optimal Approach",
-                "description": "Best possible solution",
+                "description": ai_text["optimal_explanation"],
                 "timeComplexity": "O(n)",
                 "spaceComplexity": "O(1)",
                 "code": code,
                 "efficiency": 95,
-                "explanation": "Uses optimal logic"
+                "explanation": ai_text["optimal_explanation"]
             }
         ]
     }

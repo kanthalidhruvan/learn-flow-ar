@@ -20,8 +20,9 @@
 #         }
 #     }
 from fastapi import APIRouter
-from models.schemas import CodeRequest
-from services.evaluator import evaluate_code
+#from models.schemas import CodeRequest
+from backend.models.schemas import CodeRequest
+from backend.services.evaluator import evaluate_code
 
 router = APIRouter()
 
