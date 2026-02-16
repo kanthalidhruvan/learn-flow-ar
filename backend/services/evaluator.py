@@ -1,11 +1,34 @@
-def evaluate_code(code: str, language: str):
-    # NOTE: This is deterministic logic for now (AI later)
-    length_score = min(len(code) // 50, 10)
-    complexity_score = 7
-    style_score = 8
-    practices_score = 7
+# backend/services/evaluator.py
 
-    overall = int((length_score + complexity_score + style_score + practices_score) * 2.5)
+def evaluate_code(code: str, language: str, analysis: dict):
+    score = analysis.get("score", 50)
+    solution_type = analysis.get("solutionType", "brute-force")
+    patterns = analysis.get("patternsDetected", {})
+
+    # ---------- METRIC SCORES ----------
+    correctness = 8
+    efficiency = 5
+    style = 7
+    practices = 7
+
+    # ---------- EFFICIENCY BASED ON SOLUTION ----------
+    if solution_type == "optimal":
+        efficiency = 9
+    elif solution_type == "better":
+        efficiency = 7
+    else:
+        efficiency = 4
+
+    # ---------- PENALTIES ----------
+    if patterns.get("nested_loop"):
+        efficiency -= 2
+
+    if patterns.get("binary_search"):
+        correctness += 1
+
+    efficiency = max(min(efficiency, 10), 3)
+
+    overall = int((correctness + efficiency + style + practices) * 2.5)
 
     grade = (
         "A+" if overall >= 90 else
@@ -21,40 +44,40 @@ def evaluate_code(code: str, language: str):
         "metrics": [
             {
                 "name": "Algorithm Correctness",
-                "score": 8,
+                "score": correctness,
                 "maxScore": 10,
-                "description": "Logic is correct for standard test cases",
-                "suggestions": ["Add edge case checks"]
+                "description": "Correct logic for identified problem",
+                "suggestions": ["Add edge case handling"]
             },
             {
                 "name": "Code Efficiency",
-                "score": complexity_score,
+                "score": efficiency,
                 "maxScore": 10,
-                "description": "Acceptable time complexity",
-                "suggestions": ["Reduce redundant operations"]
+                "description": f"Efficiency based on {solution_type} approach",
+                "suggestions": ["Reduce loops", "Use optimized methods"]
             },
             {
                 "name": "Code Style",
-                "score": style_score,
+                "score": style,
                 "maxScore": 10,
-                "description": "Readable and structured code",
+                "description": "Readable and structured",
                 "suggestions": ["Add comments"]
             },
             {
                 "name": "Best Practices",
-                "score": practices_score,
+                "score": practices,
                 "maxScore": 10,
-                "description": "Follows most conventions",
-                "suggestions": ["Add input validation"]
+                "description": "Standard coding conventions followed",
+                "suggestions": ["Input validation"]
             }
         ],
         "feedback": {
             "strengths": [
-                "Clear logic",
-                "Readable structure"
+                f"Detected {solution_type} solution",
+                "Readable implementation"
             ],
             "improvements": [
-                "Handle edge cases",
+                "Handle corner cases",
                 "Improve modularity"
             ],
             "recommendations": [
@@ -63,8 +86,8 @@ def evaluate_code(code: str, language: str):
             ]
         },
         "graphAnalysis": {
-            "astComplexity": 12,
+            "astComplexity": 12 if patterns.get("nested_loop") else 6,
             "cfgComplexity": 8,
-            "semanticSimilarity": 87
+            "semanticSimilarity": 85 if solution_type != "brute-force" else 60
         }
     }

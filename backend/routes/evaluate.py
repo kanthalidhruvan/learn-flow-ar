@@ -1,31 +1,23 @@
-# from fastapi import APIRouter
-
-# router = APIRouter()
-
-# @router.post("/")
-# def evaluate_code():
-#     return {
-#         "overallScore": 78,
-#         "grade": "B+",
-#         "metrics": [],
-#         "feedback": {
-#             "strengths": [],
-#             "improvements": [],
-#             "recommendations": []
-#         },
-#         "graphAnalysis": {
-#             "astComplexity": 12,
-#             "cfgComplexity": 8,
-#             "semanticSimilarity": 87
-#         }
-#     }
 from fastapi import APIRouter
-#from models.schemas import CodeRequest
 from backend.models.schemas import CodeRequest
+from backend.services.solution_generator import generate_solutions
 from backend.services.evaluator import evaluate_code
 
 router = APIRouter()
 
 @router.post("/")
 def evaluate(request: CodeRequest):
-    return evaluate_code(request.code, request.language)
+    # Step 1: Analyze code (reuse same pipeline as /analyze)
+    analysis_result = generate_solutions(
+        request.code,
+        request.language
+    )
+
+    # Step 2: Evaluate using analysis output
+    evaluation = evaluate_code(
+        request.code,
+        request.language,
+        analysis_result["analysis"]
+    )
+
+    return evaluation

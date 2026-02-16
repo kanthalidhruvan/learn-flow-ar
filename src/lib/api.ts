@@ -18,7 +18,7 @@ export async function analyzeCode(code: string, language: string) {
     throw new Error("Failed to analyze code");
   }
 
-  return response.json();
+  return await response.json();
 }
 
 /* ---------- Evaluate Code ---------- */
@@ -37,7 +37,7 @@ export async function evaluateCode(code: string, language: string) {
     throw new Error("Failed to evaluate code");
   }
 
-  return response.json();
+  return await response.json();
 }
 
 /* ---------- Fetch Video ---------- */
@@ -54,5 +54,5 @@ export async function fetchVideo(language: string, concept: string) {
     throw new Error("Failed to fetch video");
   }
 
-  return response.json();
+  return await response.json();
 }

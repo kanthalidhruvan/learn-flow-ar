@@ -7,7 +7,9 @@ import { CodeInputModule } from "@/components/CodeInputModule";
 import { SolutionComparison } from "@/components/SolutionComparison";
 import { CodeEvaluation } from "@/components/CodeEvaluation";
 import { ARVideoPlayer } from "@/components/ARVideoPlayer";
+import { ARScene } from "@/components/ARScene"; // ✅ NEW
 import { analyzeCode, evaluateCode, fetchVideo } from "@/lib/api";
+
 import {
   Brain,
   Zap,
@@ -21,8 +23,8 @@ import {
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<
-    "input" | "analysis" | "solutions" | "evaluation" | "video"
-  >("input");
+    "input" | "analysis" | "solutions" | "evaluation" | "video" | "ar"
+  >("input"); // ✅ Added "ar"
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzedCode, setAnalyzedCode] = useState("");
@@ -31,33 +33,40 @@ const Index = () => {
   const [solutions, setSolutions] = useState<any[]>([]);
   const [evaluation, setEvaluation] = useState<any | null>(null);
   const [video, setVideo] = useState<any | null>(null);
+  const [arPayload, setArPayload] = useState<any | null>(null); // ✅ NEW
 
   const { toast } = useToast();
 
-  /* ---------- BACKEND CONNECTED PIPELINE ---------- */
+  /* ---------- COMPLETE BACKEND PIPELINE ---------- */
   const handleCodeSubmit = async (code: string, language: string) => {
     try {
       setIsAnalyzing(true);
       setAnalyzedCode(code);
       setSelectedLanguage(language);
 
-      // 1️⃣ Analyze code
+      /* 1️⃣ Analyze Code */
       const analysisRes = await analyzeCode(code, language);
-      setSolutions(analysisRes.solutions);
 
-      // 2️⃣ Evaluate code
+      setSolutions(analysisRes.solutions);
+      setArPayload(analysisRes.arPayload); // ✅ Store AR payload
+
+      /* 2️⃣ Evaluate Code */
       const evaluationRes = await evaluateCode(code, language);
       setEvaluation(evaluationRes);
 
-      // 3️⃣ Fetch learning video
-      const videoRes = await fetchVideo(language, "algorithm");
+      /* 3️⃣ Fetch Video Based on Detected Problem */
+      const detectedProblem =
+        analysisRes.problemDetected || "unknown";
+
+      const videoRes = await fetchVideo(language, detectedProblem);
       setVideo(videoRes);
 
       setCurrentStep("analysis");
 
       toast({
         title: "Analysis Complete",
-        description: "Code analyzed, evaluated, and learning content generated.",
+        description:
+          "Code analyzed, evaluated, AR payload generated.",
       });
     } catch (error) {
       console.error(error);
@@ -72,10 +81,7 @@ const Index = () => {
   };
 
   const handleViewInAR = () => {
-    toast({
-      title: "AR Mode Activated",
-      description: "Solution ready for AR visualization.",
-    });
+    setCurrentStep("ar"); // ✅ Switch to AR preview
   };
 
   const handleWatchVideo = () => {
@@ -83,10 +89,7 @@ const Index = () => {
   };
 
   const handleEnterAR = () => {
-    toast({
-      title: "AR Environment Ready",
-      description: "Launching immersive AR learning experience.",
-    });
+    setCurrentStep("ar"); // ✅ Real AR screen
   };
 
   return (
@@ -140,7 +143,8 @@ const Index = () => {
             { id: "analysis", icon: Brain, label: "Analysis" },
             { id: "solutions", icon: Target, label: "Solutions" },
             { id: "evaluation", icon: Zap, label: "Evaluation" },
-            { id: "video", icon: Eye, label: "AR Learning" },
+            { id: "video", icon: Eye, label: "Video" },
+            { id: "ar", icon: Eye, label: "AR View" }, // ✅ NEW STEP
           ].map((step, index) => (
             <div key={step.id} className="flex items-center">
               <Card
@@ -156,7 +160,7 @@ const Index = () => {
                   <span className="text-sm font-medium">{step.label}</span>
                 </div>
               </Card>
-              {index < 4 && (
+              {index < 5 && (
                 <ArrowRight className="mx-2 w-4 h-4 text-muted-foreground" />
               )}
             </div>
@@ -165,6 +169,7 @@ const Index = () => {
 
         {/* ---------- MAIN CONTENT ---------- */}
         <div className="max-w-7xl mx-auto">
+
           {currentStep === "input" && (
             <CodeInputModule
               onCodeSubmit={handleCodeSubmit}
@@ -213,10 +218,15 @@ const Index = () => {
           {currentStep === "video" && video && (
             <ARVideoPlayer
               video={video}
-              concept="Algorithm Optimization"
+              concept={video.title}
               onEnterAR={handleEnterAR}
             />
           )}
+
+          {currentStep === "ar" && arPayload && (
+            <ARScene arPayload={arPayload} />
+          )}
+
         </div>
       </div>
     </div>

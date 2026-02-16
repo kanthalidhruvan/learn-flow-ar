@@ -1,0 +1,10 @@
+cd C:\Users\kanth\OneDrive\Desktop\major\learn-flow-ar
+..\venv\Scripts\activate
+python -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8001
+backend verification:http://127.0.0.1:8001/docs
+
+For front end:
+cd C:\Users\kanth\OneDrive\Desktop\major\learn-flow-ar
+npm install
+npm run dev
+

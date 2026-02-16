@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
   Eye,
   Youtube,
   ExternalLink,
@@ -29,7 +28,11 @@ interface ARVideoPlayerProps {
   onEnterAR?: () => void;
 }
 
-export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps) => {
+export const ARVideoPlayer = ({
+  video,
+  concept,
+  onEnterAR
+}: ARVideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
@@ -46,7 +49,7 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
     }
   };
 
-  const youtubeEmbedUrl = `https://www.youtube.com/embed/${video.youtubeId}?autoplay=${isPlaying ? 1 : 0}&mute=${isMuted ? 1 : 0}`;
+  const youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1&playsinline=1&autoplay=${isPlaying ? 1 : 0}&mute=${isMuted ? 1 : 0}`;
 
   return (
     <Card className="bg-card shadow-card-ar border-border/50 overflow-hidden">
@@ -57,30 +60,36 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
             AR Video Explanation
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge 
-              className={`${getDifficultyColor(video.difficulty)} text-white text-xs`}
+            <Badge
+              className={`${getDifficultyColor(
+                video.difficulty
+              )} text-white text-xs`}
             >
               {video.difficulty}
             </Badge>
-            <Badge variant="outline" className="text-primary border-primary/30 text-xs">
+            <Badge
+              variant="outline"
+              className="text-primary border-primary/30 text-xs"
+            >
               {video.duration}
             </Badge>
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-0">
-        {/* Video Player Container */}
+        {/* Video Player */}
         <div className="relative aspect-video bg-black">
           <iframe
             src={youtubeEmbedUrl}
             title={video.title}
             className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
-          
-          {/* AR Overlay Controls */}
+
+          {/* AR Button Overlay */}
           <div className="absolute top-4 right-4 flex gap-2">
             <Button
               size="sm"
@@ -92,8 +101,8 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
               AR View
             </Button>
           </div>
-          
-          {/* Custom Control Overlay */}
+
+          {/* Controls Overlay */}
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button
@@ -102,7 +111,11 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
                 onClick={() => setIsPlaying(!isPlaying)}
                 className="bg-black/50 backdrop-blur-sm border-white/20 text-white hover:bg-black/70"
               >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {isPlaying ? (
+                  <Pause className="w-4 h-4" />
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
               </Button>
               <Button
                 size="sm"
@@ -110,22 +123,34 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
                 onClick={() => setIsMuted(!isMuted)}
                 className="bg-black/50 backdrop-blur-sm border-white/20 text-white hover:bg-black/70"
               >
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                {isMuted ? (
+                  <VolumeX className="w-4 h-4" />
+                ) : (
+                  <Volume2 className="w-4 h-4" />
+                )}
               </Button>
             </div>
-            
-            <Button
-              size="sm"
-              variant="ar-outline"
-              onClick={() => window.open(`https://youtube.com/watch?v=${video.youtubeId}`, '_blank')}
-              className="bg-black/50 backdrop-blur-sm border-white/20 text-white hover:bg-black/70"
-            >
-              <ExternalLink className="w-4 h-4" />
-            </Button>
           </div>
         </div>
-        
-        {/* Video Information */}
+
+        {/* Fallback Watch Button */}
+        <div className="p-4 flex justify-end">
+          <Button
+            variant="ar-outline"
+            size="sm"
+            onClick={() =>
+              window.open(
+                `https://www.youtube.com/watch?v=${video.youtubeId}`,
+                "_blank"
+              )
+            }
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Watch on YouTube
+          </Button>
+        </div>
+
+        {/* Video Info */}
         <div className="p-6 space-y-4">
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -135,17 +160,17 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
               {video.description}
             </p>
           </div>
-          
-          {/* Topics Covered */}
+
+          {/* Topics */}
           <div className="space-y-2">
             <div className="text-sm font-medium text-foreground">
               Concepts Covered:
             </div>
             <div className="flex flex-wrap gap-2">
               {video.topics.map((topic, index) => (
-                <Badge 
+                <Badge
                   key={index}
-                  variant="outline" 
+                  variant="outline"
                   className="text-xs text-muted-foreground border-border/50"
                 >
                   {topic}
@@ -153,15 +178,15 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
               ))}
             </div>
           </div>
-          
-          {/* AR Integration Actions */}
+
+          {/* AR Info */}
           <div className="pt-4 border-t border-border/30 space-y-3">
             <div className="text-sm font-medium text-foreground">
               AR Learning Experience:
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Button 
-                variant="ar-secondary" 
+              <Button
+                variant="ar-secondary"
                 size="sm"
                 onClick={onEnterAR}
                 className="justify-start"
@@ -169,20 +194,16 @@ export const ARVideoPlayer = ({ video, concept, onEnterAR }: ARVideoPlayerProps)
                 <Eye className="w-4 h-4 mr-2" />
                 View in AR Space
               </Button>
-              <Button 
-                variant="ar-outline" 
-                size="sm"
-                className="justify-start"
-              >
+              <Button variant="ar-outline" size="sm" className="justify-start">
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Replay with AR Overlay
               </Button>
             </div>
-            
+
             <div className="text-xs text-muted-foreground bg-gradient-code p-3 rounded border border-border/30">
-              <strong>AR Enhancement:</strong> This video can be overlaid in your AR environment 
-              using Unity or ARCore, allowing you to see code visualizations in 3D space while 
-              learning about {concept}.
+              <strong>AR Enhancement:</strong> This video can be overlaid in
+              your AR environment using Unity or ARCore, allowing you to see
+              code visualizations in 3D space while learning about {concept}.
             </div>
           </div>
         </div>
