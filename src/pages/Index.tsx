@@ -7,7 +7,7 @@ import { CodeInputModule } from "@/components/CodeInputModule";
 import { SolutionComparison } from "@/components/SolutionComparison";
 import { CodeEvaluation } from "@/components/CodeEvaluation";
 import { ARVideoPlayer } from "@/components/ARVideoPlayer";
-import { ARScene } from "@/components/ARScene"; // ✅ NEW
+import { ARScene } from "@/components/ARScene";
 import { analyzeCode, evaluateCode, fetchVideo } from "@/lib/api";
 
 import {
@@ -24,7 +24,7 @@ import {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<
     "input" | "analysis" | "solutions" | "evaluation" | "video" | "ar"
-  >("input"); // ✅ Added "ar"
+  >("input");
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzedCode, setAnalyzedCode] = useState("");
@@ -33,40 +33,40 @@ const Index = () => {
   const [solutions, setSolutions] = useState<any[]>([]);
   const [evaluation, setEvaluation] = useState<any | null>(null);
   const [video, setVideo] = useState<any | null>(null);
-  const [arPayload, setArPayload] = useState<any | null>(null); // ✅ NEW
+  const [arPayload, setArPayload] = useState<any | null>(null);
 
   const { toast } = useToast();
 
-  /* ---------- COMPLETE BACKEND PIPELINE ---------- */
+  /* ------------------- FULL BACKEND PIPELINE ------------------- */
   const handleCodeSubmit = async (code: string, language: string) => {
     try {
       setIsAnalyzing(true);
       setAnalyzedCode(code);
       setSelectedLanguage(language);
 
-      /* 1️⃣ Analyze Code */
+      // 1️⃣ Analyze Code
       const analysisRes = await analyzeCode(code, language);
 
-      setSolutions(analysisRes.solutions);
-      setArPayload(analysisRes.arPayload); // ✅ Store AR payload
+      setSolutions(analysisRes.solutions || []);
+      setArPayload(analysisRes.arPayload || null);
 
-      /* 2️⃣ Evaluate Code */
+      // 2️⃣ Evaluate Code
       const evaluationRes = await evaluateCode(code, language);
-      setEvaluation(evaluationRes);
+      setEvaluation(evaluationRes || null);
 
-      /* 3️⃣ Fetch Video Based on Detected Problem */
+      // 3️⃣ Fetch Video
       const detectedProblem =
         analysisRes.problemDetected || "unknown";
 
       const videoRes = await fetchVideo(language, detectedProblem);
-      setVideo(videoRes);
+      setVideo(videoRes || null);
 
       setCurrentStep("analysis");
 
       toast({
         title: "Analysis Complete",
         description:
-          "Code analyzed, evaluated, AR payload generated.",
+          "Code analyzed, evaluation generated, AR payload ready.",
       });
     } catch (error) {
       console.error(error);
@@ -80,8 +80,18 @@ const Index = () => {
     }
   };
 
+  /* ------------------- NAVIGATION HANDLERS ------------------- */
+
   const handleViewInAR = () => {
-    setCurrentStep("ar"); // ✅ Switch to AR preview
+    if (!arPayload) {
+      toast({
+        title: "AR Not Available",
+        description: "AR payload not generated for this problem.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setCurrentStep("ar");
   };
 
   const handleWatchVideo = () => {
@@ -89,12 +99,16 @@ const Index = () => {
   };
 
   const handleEnterAR = () => {
-    setCurrentStep("ar"); // ✅ Real AR screen
+    if (arPayload) {
+      setCurrentStep("ar");
+    }
   };
+
+  /* ------------------- UI ------------------- */
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ---------- HERO SECTION ---------- */}
+      {/* HERO SECTION */}
       <div className="relative overflow-hidden bg-gradient-ar-primary">
         <div className="relative container mx-auto px-6 py-16">
           <div className="max-w-4xl">
@@ -113,7 +127,8 @@ const Index = () => {
             </h1>
 
             <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl">
-              Augmented Reality based code evaluation, explanation, and immersive learning platform.
+              Augmented Reality based code evaluation, explanation,
+              and immersive learning platform.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -135,16 +150,16 @@ const Index = () => {
         </div>
       </div>
 
-      {/* ---------- STEP NAVIGATION ---------- */}
+      {/* STEP NAVIGATION */}
       <div className="container mx-auto px-6 py-8">
-        <div className="flex items-center justify-center gap-4 mb-8">
+        <div className="flex items-center justify-center gap-4 mb-8 flex-wrap">
           {[
             { id: "input", icon: Code2, label: "Code Input" },
             { id: "analysis", icon: Brain, label: "Analysis" },
             { id: "solutions", icon: Target, label: "Solutions" },
             { id: "evaluation", icon: Zap, label: "Evaluation" },
             { id: "video", icon: Eye, label: "Video" },
-            { id: "ar", icon: Eye, label: "AR View" }, // ✅ NEW STEP
+            { id: "ar", icon: Eye, label: "AR View" },
           ].map((step, index) => (
             <div key={step.id} className="flex items-center">
               <Card
@@ -157,7 +172,9 @@ const Index = () => {
               >
                 <div className="flex items-center gap-2">
                   <step.icon className="w-5 h-5" />
-                  <span className="text-sm font-medium">{step.label}</span>
+                  <span className="text-sm font-medium">
+                    {step.label}
+                  </span>
                 </div>
               </Card>
               {index < 5 && (
@@ -167,7 +184,7 @@ const Index = () => {
           ))}
         </div>
 
-        {/* ---------- MAIN CONTENT ---------- */}
+        {/* MAIN CONTENT */}
         <div className="max-w-7xl mx-auto">
 
           {currentStep === "input" && (
@@ -223,8 +240,17 @@ const Index = () => {
             />
           )}
 
-          {currentStep === "ar" && arPayload && (
-            <ARScene arPayload={arPayload} />
+          {currentStep === "ar" && (
+            arPayload ? (
+              <ARScene arPayload={arPayload} />
+            ) : (
+              <Card className="p-6 text-center">
+                <CardTitle>AR Not Available</CardTitle>
+                <p className="mt-2 text-muted-foreground">
+                  No AR payload generated for this problem.
+                </p>
+              </Card>
+            )
           )}
 
         </div>

@@ -3,16 +3,22 @@
 # --------------------------------------------------
 # IMPORTS
 # --------------------------------------------------
+from backend.services.handlers.loop import get_solutions as loop_handler
+from backend.services.handlers.counting import get_solutions as counting_handler
+from backend.services.handlers.sum_array import get_solutions as sum_handler
 from backend.services.problem_detector import detect_problem
 from backend.services.handlers.linear_search import get_solutions as linear_search
 from backend.services.handlers.array_max_min import get_solutions as array_max_min
 from backend.services.handlers.sorting import get_solutions as sorting
 from backend.services.handlers.merge_sort import get_solutions as merge_sort
 from backend.services.handlers.quick_sort import get_solutions as quick_sort
+
+# ✅ KEEP ONLY THIS (REMOVE duplicate import)
 from backend.services.ar_payload_generator import generate_ar_payload
-from backend.services.ar_generator import generate_ar_payload
+
+
 # --------------------------------------------------
-# LANGUAGE DETECTION (FALLBACK LOGIC)
+# LANGUAGE DETECTION
 # --------------------------------------------------
 def detect_language_from_code(code: str):
     code_lower = code.lower()
@@ -32,7 +38,7 @@ def detect_language_from_code(code: str):
 
 
 # --------------------------------------------------
-# PATTERN ANALYSIS (LANGUAGE-AGNOSTIC)
+# PATTERN ANALYSIS
 # --------------------------------------------------
 def analyze_patterns(code: str, language: str):
     code_lower = code.lower()
@@ -68,8 +74,6 @@ def analyze_patterns(code: str, language: str):
 # CLASSIFICATION + SCORING
 # --------------------------------------------------
 def classify_solution(patterns):
-    score = 50
-
     if patterns["nested_loop"]:
         return "brute-force", "O(n²)", 40
 
@@ -86,7 +90,7 @@ def classify_solution(patterns):
 
 
 # --------------------------------------------------
-# FALLBACK SOLUTION GENERATOR
+# FALLBACK SOLUTIONS
 # --------------------------------------------------
 def generate_solution_variants(language: str):
     language = language.lower()
@@ -116,45 +120,54 @@ def generate_solution_variants(language: str):
 
 
 # --------------------------------------------------
-# MAIN PIPELINE (USED BY /api/analyze)
+# MAIN PIPELINE
 # --------------------------------------------------
 def generate_solutions(code: str, language: str):
-    # 1. Detect language
+
+    # 1️⃣ Detect language
     detected_language = detect_language_from_code(code)
 
-    # 2. Detect problem
+    # 2️⃣ Detect problem
     problem = detect_problem(code)
 
-    # 3. Analyze patterns
+    # 3️⃣ Analyze patterns
     patterns = analyze_patterns(code, detected_language)
 
-    # 4. Classify solution
+    # 4️⃣ Classify solution
     solution_type, time_complexity, score = classify_solution(patterns)
 
-    # 5. Select correct handler
+    # 5️⃣ Select handler
     if problem == "linear_search":
-       variants = linear_search(detected_language)
+        variants = linear_search(detected_language)
     elif problem == "array_max_min":
-       variants = array_max_min(detected_language)
+        variants = array_max_min(detected_language)
     elif problem == "sorting":
-       variants = sorting(detected_language)
+        variants = sorting(detected_language)
     elif problem == "merge_sort":
-       variants = merge_sort(detected_language)
+        variants = merge_sort(detected_language)
     elif problem == "quick_sort":
-       variants = quick_sort(detected_language)
+        variants = quick_sort(detected_language)
+# ✅ NEW HANDLERS (ADD HERE)
+    elif problem == "loop":
+       variants = loop_handler(detected_language)
+    elif problem == "counting":
+       variants = counting_handler(detected_language)
+    elif problem == "sum_array":
+       variants = sum_handler(detected_language)
     else:
        variants = generate_solution_variants(detected_language)
+    # --------------------------------------------------
+    # ✅ FIXED AR PAYLOAD (IMPORTANT)
+    # --------------------------------------------------
+    ar_payload = generate_ar_payload(
+        problem,
+        code,
+        detected_language   # ✅ THIS FIXES YOUR UI ISSUE
+    )
 
-    # if problem == "linear_search":
-    #     variants = linear_search(detected_language)
-    # elif problem == "array_max_min":
-    #     variants = array_max_min(detected_language)
-    # else:
-    #     variants = generate_solution_variants(detected_language)
-
-    # 6. Final response
-    ar_payload = generate_ar_payload(problem, code)
-    #ar_payload = generate_ar_payload(problem, code)
+    # --------------------------------------------------
+    # FINAL RESPONSE
+    # --------------------------------------------------
     return {
         "detectedLanguage": detected_language,
         "problemDetected": problem,
@@ -195,5 +208,6 @@ def generate_solutions(code: str, language: str):
                 "code": variants.get("optimal", ""),
                 "explanation": "Best known approach."
             }
-        ],"arPayload": ar_payload
+        ],
+        "arPayload": ar_payload   # ✅ IMPORTANT
     }

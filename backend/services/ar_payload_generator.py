@@ -3,8 +3,8 @@
 from backend.services.ar_animation_engine import generate_linear_search_animation
 
 
-def generate_ar_payload(problem: str, code: str):
-
+# def generate_ar_payload(problem: str, code: str):
+def generate_ar_payload(problem: str, code: str, language: str):
     # ---------------------------------------------------
     # LINEAR SEARCH (Advanced Animated Version)
     # ---------------------------------------------------
@@ -33,10 +33,10 @@ def generate_ar_payload(problem: str, code: str):
             "cameraPosition": [0, 5, -12],
 
             "metadata": {
-                "problem": "linear_search",
-                "language": "python",
-                "totalSteps": len(animations)
-            },
+    "problem": problem,
+    "language": language,
+    "totalSteps": len(animations)
+},
 
             "nodes": nodes,
             "edges": [],
@@ -93,10 +93,10 @@ def generate_ar_payload(problem: str, code: str):
             "cameraPosition": [0, 6, -14],
 
             "metadata": {
-                "problem": "binary_search",
-                "language": "python",
-                "totalSteps": len(animations)
-            },
+    "problem": problem,
+    "language": language,
+    "totalSteps": len(animations)
+},
 
             "nodes": nodes,
             "edges": [],
@@ -157,10 +157,10 @@ def generate_ar_payload(problem: str, code: str):
             "cameraPosition": [0, 6, -12],
 
             "metadata": {
-                "problem": "sorting",
-                "language": "python",
-                "totalSteps": len(animations)
-            },
+    "problem": problem,
+    "language": language,
+    "totalSteps": len(animations)
+},
 
             "nodes": nodes,
             "edges": [],
@@ -177,10 +177,10 @@ def generate_ar_payload(problem: str, code: str):
         "cameraPosition": [0, 5, -10],
 
         "metadata": {
-            "problem": "unknown",
-            "language": "python",
-            "totalSteps": 0
-        },
+    "problem": problem,
+    "language": language,
+    "totalSteps": len(animations)
+},
 
         "nodes": [],
         "edges": [],

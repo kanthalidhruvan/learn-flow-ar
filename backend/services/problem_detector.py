@@ -29,4 +29,14 @@ def detect_problem(code: str):
     ):
         return "sorting"
 
+    # ✅ NEW RULES
+    if "count" in code_lower:
+        return "counting"
+
+    if "sum" in code_lower:
+        return "sum_array"
+
+    if "for" in code_lower:
+        return "loop"
+        
     return "unknown"
