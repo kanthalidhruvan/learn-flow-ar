@@ -39,32 +39,52 @@ export const ARScene = ({ arPayload }: ARSceneProps) => {
 
   /* ---------------- Node Styling ---------------- */
   const getNodeStyle = (nodeId: number) => {
-    let style: any = {
-      transition: "all 0.6s ease-in-out",
-      transform: "scale(1)",
-      opacity: 1,
-    };
-
-    if (!currentAnimation) return style;
-
-    if (currentAnimation.type === "highlight" &&
-        currentAnimation.node === nodeId) {
-      style.backgroundColor =
-        currentAnimation.color === "green"
-          ? "#16a34a"
-          : "#dc2626";
-      style.transform = "scale(1.2)";
-      style.boxShadow = "0 0 15px rgba(0,0,0,0.4)";
-    }
-
-    if (currentAnimation.type === "highlight_range" &&
-        nodeId >= currentAnimation.low &&
-        nodeId <= currentAnimation.high) {
-      style.backgroundColor = "#facc15";
-    }
-
-    return style;
+  let style: any = {
+    transition: "all 0.6s ease-in-out",
+    transform: "scale(1)",
+    opacity: 1,
+    backgroundColor: "#3b82f6",
   };
+
+  if (!currentAnimation) return style;
+
+  if (currentAnimation.type === "highlight" && currentAnimation.node === nodeId) {
+    style.backgroundColor =
+      currentAnimation.color === "green" ? "#16a34a" :
+      currentAnimation.color === "yellow" ? "#facc15" : "#dc2626";
+    style.transform = "scale(1.25)";
+    style.boxShadow = "0 0 18px rgba(0,0,0,0.5)";
+  }
+
+  if (
+    currentAnimation.type === "highlight_range" &&
+    nodeId >= currentAnimation.low &&
+    nodeId <= currentAnimation.high
+  ) {
+    style.backgroundColor = "#facc15";
+    style.transform = "scale(1.1)";
+  }
+
+  if (
+    currentAnimation.type === "compare" &&
+    (currentAnimation.nodeA === nodeId || currentAnimation.nodeB === nodeId)
+  ) {
+    style.backgroundColor = "#dc2626";
+    style.transform = "scale(1.15)";
+    style.boxShadow = "0 0 12px rgba(220,38,38,0.6)";
+  }
+
+  if (
+    currentAnimation.type === "swap" &&
+    (currentAnimation.nodeA === nodeId || currentAnimation.nodeB === nodeId)
+  ) {
+    style.backgroundColor = "#9333ea";
+    style.transform = "scale(1.2) translateY(-10px)";
+    style.boxShadow = "0 0 20px rgba(147,51,234,0.7)";
+  }
+
+  return style;
+};
 
   const progress =
     animations.length > 0
@@ -135,7 +155,34 @@ export const ARScene = ({ arPayload }: ARSceneProps) => {
             >
               Auto Play
             </Button>
+            <Button
+  variant="outline"
+  onClick={() => {
+    setCurrentStep(0);
+    setAutoPlay(false);
+  }}
+>
+  Reset
+</Button>
           </div>
+          {/* Color Legend */}
+<div className="flex flex-wrap gap-3 justify-center text-xs">
+  {[
+    { color: "#3b82f6", label: "Default" },
+    { color: "#dc2626", label: "Checking / Compare" },
+    { color: "#facc15", label: "Range / Min" },
+    { color: "#16a34a", label: "Found / Max" },
+    { color: "#9333ea", label: "Swapping" },
+  ].map((item) => (
+    <div key={item.label} className="flex items-center gap-1">
+      <div
+        className="w-3 h-3 rounded-full"
+        style={{ backgroundColor: item.color }}
+      />
+      <span className="text-slate-300">{item.label}</span>
+    </div>
+  ))}
+</div>
         </CardContent>
       </Card>
 

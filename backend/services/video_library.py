@@ -90,6 +90,30 @@ VIDEO_LIBRARY = {
             "Time Complexity"
         ]
     },
+    "loop": {
+    "title": "Loops in Programming – Basics",
+    "description": "Understanding for loops, while loops and iteration patterns.",
+    "youtubeId": "95kNbCTDPcw",
+    "duration": "12:00",
+    "difficulty": "beginner",
+    "topics": ["For Loop", "While Loop", "Iteration", "Traversal"]
+},
+"counting": {
+    "title": "Counting Elements in an Array",
+    "description": "How to count occurrences of elements using hash maps and arrays.",
+    "youtubeId": "8hly31xKli0",
+    "duration": "10:00",
+    "difficulty": "beginner",
+    "topics": ["Counting", "Frequency", "HashMap", "Array"]
+},
+"sum_array": {
+    "title": "Array Sum – Prefix Sum Technique",
+    "description": "Calculating array sum efficiently using prefix sum approach.",
+    "youtubeId": "XD1QOIOjB8w",
+    "duration": "11:30",
+    "difficulty": "beginner",
+    "topics": ["Sum", "Prefix Sum", "Traversal", "Optimization"]
+},
 
     "unknown": {
         "title": "Algorithm Fundamentals – DSA Foundation",
