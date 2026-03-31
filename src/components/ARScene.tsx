@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import { ExternalLink } from "lucide-react";
 interface ARSceneProps {
   arPayload: any;
 }
@@ -241,6 +241,30 @@ export const ARScene = ({ arPayload }: ARSceneProps) => {
               {currentAnimation?.type || "Not Started"}
             </span>
           </div>
+          // ONLY showing fixed section (rest is fine)
+
+{/* VisuAlgo Link */}
+{metadata.visualgoUrl && (
+  <div className="pt-4 border-t border-gray-200">
+    <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
+      Full Interactive Visualization
+    </p>
+
+    <a
+      href={metadata.visualgoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-all duration-200"
+    >
+      <ExternalLink className="w-4 h-4" />
+      View Full Visualization on VisuAlgo
+    </a>
+
+    <p className="text-xs text-gray-400 mt-2">
+      Opens the complete interactive {formatProblem(metadata.problem)} visualization with step controls, custom input, and quiz mode.
+    </p>
+  </div>
+)}
 
         </CardContent>
       </Card>

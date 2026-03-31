@@ -1,5 +1,5 @@
 # backend/services/ar_payload_generator.py
-
+from backend.services.video_library import VISUALGO_LINKS
 from backend.services.ar_animation_engine import (
     generate_linear_search_animation,
     generate_binary_search_animation,
@@ -29,7 +29,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -56,7 +57,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -82,7 +84,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -108,7 +111,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -145,7 +149,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -186,7 +191,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -216,7 +222,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -246,7 +253,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -278,7 +286,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
             "metadata": {
                 "problem": problem,
                 "language": language,
-                "totalSteps": len(animations)
+                "totalSteps": len(animations),
+                "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
             },
             "nodes": nodes,
             "edges": [],
@@ -296,7 +305,8 @@ def generate_ar_payload(problem: str, code: str, language: str):
         "metadata": {
             "problem": problem,
             "language": language,
-            "totalSteps": 0
+            "totalSteps": 0,
+            "visualgoUrl": VISUALGO_LINKS.get(problem, "https://visualgo.net/en")
         },
         "nodes": [],
         "edges": [],

@@ -114,7 +114,6 @@ VIDEO_LIBRARY = {
     "difficulty": "beginner",
     "topics": ["Sum", "Prefix Sum", "Traversal", "Optimization"]
 },
-
     "unknown": {
         "title": "Algorithm Fundamentals – DSA Foundation",
         "description": "Understanding algorithm thinking, complexity and optimization techniques.",
@@ -129,3 +128,16 @@ VIDEO_LIBRARY = {
         ]
     }
 }
+    # Mapping from detected problem → VisuAlgo URL
+VISUALGO_LINKS = {
+    "linear_search":  "https://visualgo.net/en/array",
+    "binary_search":  "https://visualgo.net/en/bst",
+    "sorting":        "https://visualgo.net/en/sorting",
+    "merge_sort":     "https://visualgo.net/en/sorting",
+    "quick_sort":     "https://visualgo.net/en/sorting",
+    "array_max_min":  "https://visualgo.net/en/array",
+    "loop":           "https://visualgo.net/en/array",
+    "counting":       "https://visualgo.net/en/sorting",
+    "sum_array":      "https://visualgo.net/en/array",
+    "unknown":        "https://visualgo.net/en",
+    }

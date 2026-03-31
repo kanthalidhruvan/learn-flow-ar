@@ -26,12 +26,14 @@ interface ARVideoPlayerProps {
   video: VideoExplanation;
   concept: string;
   onEnterAR?: () => void;
+  arPayload?: any;
 }
 
 export const ARVideoPlayer = ({
   video,
   concept,
-  onEnterAR
+  onEnterAR,
+  arPayload
 }: ARVideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -89,12 +91,12 @@ export const ARVideoPlayer = ({
             allowFullScreen
           />
 
-          {/* AR Button Overlay */}
+          {/* AR Button */}
           <div className="absolute top-4 right-4 flex gap-2">
             <Button
               size="sm"
               variant="ar"
-              onClick={onEnterAR}
+              onClick={() => onEnterAR?.()}
               className="bg-black/50 backdrop-blur-sm hover:bg-black/70"
             >
               <Eye className="w-4 h-4 mr-1" />
@@ -102,7 +104,7 @@ export const ARVideoPlayer = ({
             </Button>
           </div>
 
-          {/* Controls Overlay */}
+          {/* Controls */}
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button
@@ -117,6 +119,7 @@ export const ARVideoPlayer = ({
                   <Play className="w-4 h-4" />
                 )}
               </Button>
+
               <Button
                 size="sm"
                 variant="ar-outline"
@@ -133,7 +136,7 @@ export const ARVideoPlayer = ({
           </div>
         </div>
 
-        {/* Fallback Watch Button */}
+        {/* Watch on YouTube */}
         <div className="p-4 flex justify-end">
           <Button
             variant="ar-outline"
@@ -150,7 +153,7 @@ export const ARVideoPlayer = ({
           </Button>
         </div>
 
-        {/* Video Info */}
+        {/* Info Section */}
         <div className="p-6 space-y-4">
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -167,7 +170,7 @@ export const ARVideoPlayer = ({
               Concepts Covered:
             </div>
             <div className="flex flex-wrap gap-2">
-              {video.topics.map((topic, index) => (
+              {video.topics?.map((topic, index) => (
                 <Badge
                   key={index}
                   variant="outline"
@@ -179,26 +182,71 @@ export const ARVideoPlayer = ({
             </div>
           </div>
 
-          {/* AR Info */}
+          {/* AR Section */}
           <div className="pt-4 border-t border-border/30 space-y-3">
             <div className="text-sm font-medium text-foreground">
               AR Learning Experience:
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Button
                 variant="ar-secondary"
                 size="sm"
-                onClick={onEnterAR}
+                onClick={() => onEnterAR?.()}
                 className="justify-start"
               >
                 <Eye className="w-4 h-4 mr-2" />
                 View in AR Space
               </Button>
-              <Button variant="ar-outline" size="sm" className="justify-start">
+
+              <Button
+                variant="ar-outline"
+                size="sm"
+                className="justify-start"
+              >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Replay with AR Overlay
               </Button>
+
+              {arPayload?.metadata?.visualgoUrl && (
+                <Button
+                  variant="ar-outline"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() =>
+                    window.open(arPayload.metadata.visualgoUrl, "_blank")
+                  }
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Open on VisuAlgo
+                </Button>
+              )}
             </div>
+
+            {/* ✅ FIXED VISUALGO BANNER */}
+            {arPayload?.metadata?.visualgoUrl && (
+              <div className="pt-2">
+                <a
+                  href={arPayload.metadata.visualgoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-all duration-200 group"
+                >
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4" />
+                    <span>View Full Interactive Visualization on VisuAlgo</span>
+                  </div>
+                  <span className="text-xs text-indigo-200 group-hover:text-white transition-colors">
+                    Opens in new tab →
+                  </span>
+                </a>
+
+                <p className="text-xs text-muted-foreground mt-2">
+                  See the complete step-by-step animation, use custom input,
+                  and try the built-in quiz for <strong>{concept}</strong>.
+                </p>
+              </div>
+            )}
 
             <div className="text-xs text-muted-foreground bg-gradient-code p-3 rounded border border-border/30">
               <strong>AR Enhancement:</strong> This video can be overlaid in
